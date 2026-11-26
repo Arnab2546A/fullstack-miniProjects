@@ -44,12 +44,20 @@ const getNoteByIdController=async (req,res)=>{
 const updateNoteController=async (req,res)=>{
    try{
       const noteId=req.params.id;
+      const getNote=await noteModel.findById(noteId)
       const updatedBody=req.body;
-      const updateNote=await noteModel.findByIdAndUpdate(noteId,updatedBody,{returnDocument: 'after'})
-      res.status(200).json({
+      if(getNote){
+          const updateNote=await noteModel.findByIdAndUpdate(noteId,updatedBody,{returnDocument: 'after'})
+          res.status(200).json({
          message:"note updated successfully",
          updateNote
       })
+      }
+      else{
+         return res.status(500).json({
+         message:"note not found",
+      })
+      }
    }
    catch(err){
       res.status(500).send("note is not updated")
