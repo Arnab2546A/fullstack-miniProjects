@@ -37,36 +37,43 @@ const [allNotes, setAllNotes] = useState([])
 const handleSubmit=async (e)=>{
   e.preventDefault()
   if(updateFormID){
+    const response=await axios.get(`http://localhost:3000/notes/${updateFormID}`)
+    console.log(response)
+  if(response.data.getNote){
     try{
-    const response=await axios.put(`http://localhost:3000/notes/${updateFormID}`,formValues)
+     const response=await axios.put(`http://localhost:3000/notes/${updateFormID}`,formValues)
     console.log(response.data)
-    getAllNotes()
-    setFormUI({
-     title:"Create Notes",
-    desc:"Create your ideas and thoughts",
-    button:"Create Note",
-  })
   }
   catch(err){
     console.log(err)
   }
   }
   else{
+     alert("note does not exist")
+  }
+  setFormUI({
+     title:"Create Notes",
+    desc:"Create your ideas and thoughts",
+    button:"Create Note",
+  })
+  setUpdateFormID(null)
+  }
+  else{
     try{
     const response=await axios.post("http://localhost:3000/notes/create",formValues)
     console.log(response.data)
-    getAllNotes()
   }
   catch(err){
     console.log(err)
   }
   }
-  setUpdateFormID(null)
+  getAllNotes()
   setFormValues({
     title:"",
     description:""
   });
 }
+
 
 const handleUpdate=(note)=>{
   console.log(note)
@@ -80,7 +87,6 @@ const handleUpdate=(note)=>{
     title:note.title?note.title:"",
     description:note.description?note.description:""
   });
-
 }
 
 const handleDelete=async (id)=>{
